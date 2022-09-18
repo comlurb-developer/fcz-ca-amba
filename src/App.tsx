@@ -122,15 +122,12 @@ const App = () => {
 
       {!isNew && <div>
 
-        {isOk && <div id="hand"><FontAwesomeIcon icon={faThumbsUp} style={styles.hand} /></div>}
 
-        <label id="dadosdaempresa">DADOS DA EMPRESA</label>
+
+
 
         <div className="form-group">
 
-          <input disabled type="text" value={cnpj} className="form-control" id="cnpj" onChange={() => { }}></input>
-          <input disabled type="text" value={empresa} className="form-control" id="razaosocial" onChange={() => { }}></input>
-          <input disabled type="text" value={tel} className="form-control" id="telefone" onChange={() => { }}></input>
           <button
             id="search"
             type="button"
@@ -142,6 +139,13 @@ const App = () => {
               setTel("");
             }}
           ><FontAwesomeIcon icon={faMagnifyingGlass} /></button>
+
+          {isOk && <div id="hand"><FontAwesomeIcon icon={faThumbsUp} style={styles.hand} /></div>}
+          <label id="dadosdaempresa">Dados coletados na busca</label>
+          <input disabled type="text" value={cnpj} className="form-control" id="cnpj" onChange={() => { }}></input>
+          <input disabled type="text" value={empresa} className="form-control" id="razaosocial" onChange={() => { }}></input>
+          <input disabled type="text" value={tel} className="form-control" id="telefone" onChange={() => { }}></input>
+
 
         </div>
 
