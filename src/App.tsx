@@ -6,7 +6,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { Cacambas } from './services/cacambas';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
-import { ReactSearchAutocomplete } from 'react-search-autocomplete'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 
 
 const App = () => {
@@ -16,8 +17,13 @@ const App = () => {
   const [tels, setTels] = useState<any[]>([]);
   const [isOk, setIsOk] = useState(false);
   const [empresa, setEmpresa] = useState<any>("");
+  const [cnpj, setCnpj] = useState<any>("");
+  const [tel, setTel] = useState<any>("");
+  const [isNew, setIsNew] = useState(false);
+  const { innerWidth, innerHeight } = window;
 
   useEffect(() => {
+
     Cacambas()
       .then(response => {
         setEmpresas([]);
@@ -32,7 +38,6 @@ const App = () => {
           setCnpjs((preCnpjs) => [...preCnpjs, obj2]);
 
           let obj3 = { id: empresa.razaosocial, name: empresa.tel }
-          console.log(obj3);
           setTels((preTels) => [...preTels, obj3])
         })
       })
@@ -46,10 +51,40 @@ const App = () => {
 
   }
 
-  const handleOnSelect = (item: any) => {
+  const handleOnSelectEmpresa = (item: any) => {
     // the item selected
     if (item) {
       setIsOk(true);
+      const index = empresas.findIndex(x => x.name === item.name);
+      setEmpresa(empresas[index].name);
+      setCnpj(cnpjs[index].name);
+      setTel(tels[index].name.trim());
+      setIsNew(false);
+    }
+  }
+
+  const handleOnSelectCnpj = (item: any) => {
+    // the item selected
+    if (item) {
+      setCnpj(item);
+      setIsOk(true);
+      const index = cnpjs.findIndex(x => x.name === item.name);
+      setEmpresa(empresas[index].name);
+      setCnpj(cnpjs[index].name);
+      setTel(tels[index].name.trim());
+      setIsNew(false);
+    }
+  }
+
+  const handleOnSelectTelefone = (item: any) => {
+    // the item selected
+    if (item) {
+      setIsOk(true);
+      const index = tels.findIndex(x => x.name === item.name);
+      setEmpresa(empresas[index].name);
+      setCnpj(cnpjs[index].name);
+      setTel(tels[index].name.trim());
+      setIsNew(false);
     }
   }
 
@@ -83,92 +118,110 @@ const App = () => {
   }
 
   return (
-    <>
+    <div className='container'>
 
-      <label style={styles.label}>NOME DA EMPRESA</label>
-      <header className="App-header">
+      {!isNew && <div>
+
+        {isOk && <div id="hand"><FontAwesomeIcon icon={faThumbsUp} style={styles.hand} /></div>}
+
+        <label id="dadosdaempresa">DADOS DA EMPRESA</label>
+
+        <div className="form-group">
+
+          <input disabled type="text" value={cnpj} className="form-control" id="cnpj" onChange={() => { }}></input>
+          <input disabled type="text" value={empresa} className="form-control" id="razaosocial" onChange={() => { }}></input>
+          <input disabled type="text" value={tel} className="form-control" id="telefone" onChange={() => { }}></input>
+          <button
+            id="search"
+            type="button"
+            className="btn btn-primary btn-lg btn-block"
+            onClick={() => {
+              setIsNew(true);
+              setEmpresa("");
+              setCnpj("");
+              setTel("");
+            }}
+          ><FontAwesomeIcon icon={faMagnifyingGlass} /></button>
+
+        </div>
+
+      </div>}
+
+      {isNew && <div>
+        <label style={styles.label}>NOME DA EMPRESA</label>
         <div style={{ width: 400 }}>
           <ReactSearchAutocomplete
             styling={styles.combobox}
             items={empresas}
             onSearch={handleOnSearch}
-            onSelect={handleOnSelect}
+            onSelect={handleOnSelectEmpresa}
             autoFocus
             onClear={() => {
               setIsOk(false);
             }}
             formatResult={formatResult}
-            maxResults={1}
+            maxResults={5}
             showNoResults={true}
           />
         </div>
-      </header>
 
-      <div style={styles.cnpj}>
-        <label style={styles.label}>CNPJ</label>
-        <header className="App-header">
-          <div style={{ width: 400 }}>
-            <ReactSearchAutocomplete
-              styling={styles.combobox2}
-              items={cnpjs}
-              onSearch={handleOnSearch}
-              onSelect={handleOnSelect}
-              autoFocus
-              onClear={() => {
-                setIsOk(false);
-              }}
-              formatResult={formatResult2}
-              maxResults={1}
-              showNoResults={true}
-            />
-          </div>
-        </header>
+        <div style={styles.cnpj}>
+          <label style={styles.label}>CNPJ</label>
+          <header className="App-header">
+            <div style={{ width: 400 }}>
+              <ReactSearchAutocomplete
+                styling={styles.combobox2}
+                items={cnpjs}
+                onSearch={handleOnSearch}
+                onSelect={handleOnSelectCnpj}
+                autoFocus
+                onClear={() => {
+                  setIsOk(false);
+                }}
+                formatResult={formatResult2}
+                maxResults={5}
+                showNoResults={true}
+              />
+            </div>
+          </header>
+        </div>
+
+        <div style={styles.cnpj}>
+          <label style={styles.label}>TELEFONES</label>
+          <header className="App-header">
+            <div style={{ width: 400 }}>
+              <ReactSearchAutocomplete
+                showNoResults={true}
+                styling={styles.combobox3}
+                items={tels}
+                onSearch={handleOnSearch}
+                onSelect={handleOnSelectTelefone}
+                autoFocus
+                onClear={() => {
+                  setIsOk(false);
+                }}
+                formatResult={formatResult3}
+                maxResults={5}
+
+              />
+            </div>
+          </header>
+        </div>
+
+
       </div>
+      }
 
-      <div style={styles.cnpj}>
-        <label style={styles.label}>TELEFONES</label>
-        <header className="App-header">
-          <div style={{ width: 400 }}>
-            <ReactSearchAutocomplete
-              showNoResults={true}
-              styling={styles.combobox3}
-              items={tels}
-              onSearch={handleOnSearch}
-              onSelect={handleOnSelect}
-              autoFocus
-              onClear={() => {
-                setIsOk(false);
-              }}
-              formatResult={formatResult3}
-              maxResults={1}
-
-            />
-          </div>
-        </header>
-      </div>
-
-
-      {isOk && <FontAwesomeIcon icon={faThumbsUp} style={styles.hand} />}
-      {!isOk && <FontAwesomeIcon icon={faThumbsUp} style={styles.badhand} />}
-
-
-    </>
+    </div>
   );
 }
 
 const styles = {
   Autocomplete: { marginTop: 25 },
   hand: {
-    width: '10rem',
-    height: '10rem',
+    width: '4rem',
+    height: '4rem',
     color: 'green',
-    marginTop: '6rem'
-  },
-  badhand: {
-    width: '10rem',
-    height: '10rem',
-    color: 'red',
-    marginTop: '6rem'
   },
   combobox: {
     height: "4rem",
@@ -229,6 +282,9 @@ const styles = {
   },
   cnpj: {
     marginTop: '6rem'
+  },
+  span: {
+    textAlign: 'left'
   }
 }
 
