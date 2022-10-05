@@ -178,7 +178,6 @@ const App = () => {
                 items={cnpjs}
                 onSearch={handleOnSearch}
                 onSelect={handleOnSelectCnpj}
-                autoFocus
                 onClear={() => {
                   setIsOk(false);
                 }}
@@ -200,7 +199,6 @@ const App = () => {
                 items={tels}
                 onSearch={handleOnSearch}
                 onSelect={handleOnSelectTelefone}
-                autoFocus
                 onClear={() => {
                   setIsOk(false);
                 }}
